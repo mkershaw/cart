@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import'./App.css'
-
+import './App.css'
+import { getCart, addItemToCart, removeItemFromCart } from './components/cartfunction'
+import { getItems } from './Data/items'
 import { List } from "./components/List";
 import { Cart } from "./components/Cart";
 
@@ -14,42 +15,44 @@ class App extends Component {
   }
 
 
-  componentDidMount() {
-    const cartJSON = localStorage.getItem("cart");
-    const cart = JSON.parse(cartJSON);
-  
-    this.setState({
-      items: [" Books", "Paper", "Pens", "Pencils"],
-      cart: cart || []
-
-
-
-    })
-
+  async componentDidMount() {
+    try {
+      const items = await getItems();
+      const cart = await getCart();
+      console.log(items)
+      console.log(cart)
+      this.setState({
+        items: items,
+        cart: cart
+      })
+    }
+    catch (err) {
+      console.log(err)
+    }
   }
   addToCart = (item) => () => {
-    const cart = [...this.state.cart, item]
-    localStorage.setItem("cart", JSON.stringify (cart))
-    this.setState({
-      cart
-
-    })
+    addItemToCart(item)
+      .then(cart =>
+        this.setState({
+          cart: cart
+        }))
   }
-  removeFromCart = (index) => () => {
-    this.state.cart.splice(index, 1)
-    localStorage.setItem("cart", JSON.stringify (this.state.cart))
-    this.setState({
-      cart: this.state.cart
-    })
+  removeFromCart = (item) => () => {
+    removeItemFromCart(item.id)
+      .then(cart =>
+        this.setState({
+          cart: cart
+        }))
   }
   render() {
     return (
       <div className="App">
         <h1>  My Store </h1>
         <ul>
-          {this.state.items.map((item, index) =>
-            <li key={index}>
-              {item}
+          {this.state.items.map((item) =>
+            <li>
+              {item.name}
+              <img src={item.image} />
               <button onClick={this.addToCart(item)}>Add to Cart</button>
             </li>
           )}
@@ -58,10 +61,10 @@ class App extends Component {
         <h1> My Cart </h1>
         <ul>
           {this.state.cart.length > 0 ?
-            this.state.cart.map((item, index) =>
-              <li key={index}>
-                {item}
-                <button onClick={this.removeFromCart(index)}>Remove</button>
+            this.state.cart.map((item, id) =>
+              <li>
+                {item.name}
+                <button onClick={this.removeFromCart(item)}>Remove</button>
               </li>
             )
             :
