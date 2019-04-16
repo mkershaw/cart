@@ -2,22 +2,28 @@
 ul{
   list-style: none;
   padding: 0;
+  display: 'flex';
+  flexWrap: 'wrap';
+  margin: 0;
+  
 }
 img {
   border: 1px solid #ddd;
   border-radius: 4px;
-  padding: 5px;
-  width: 150px;
+  padding: 25px;
+  width: 100px;
 }
 
 body{
 
-  background-color: peachpuff;
+  background-color: burlywood;
+  
+
 }
 
 .App {
   text-align: center;
-  font-display: sans-serif;
+  font-display: arial;
 
 
   
@@ -47,6 +53,7 @@ body{
 
 .App-link {
   color: #61dafb;
+  
 }
 
 @keyframes App-logo-spin {
